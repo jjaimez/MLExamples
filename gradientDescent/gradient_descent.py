@@ -26,32 +26,31 @@ def step_gradient(b_current, m_current, points, learningRate):
     new_m = m_current - (learningRate * m_gradient)
     return [new_b, new_m]
 
-def gradient_descent_runner(points, starting_b, starting_m, learning_rate, num_iterations):
+def gradient_descent(points, starting_b, starting_m, learning_rate, num_iterations):
     b = starting_b
     m = starting_m
     for i in range(num_iterations):
         b, m = step_gradient(b, m, array(points), learning_rate)
     return [b, m]
 
-def run():
+def run_gradient_descent():
     points = genfromtxt("data.csv", delimiter=",") #Age,Income
     learning_rate = 0.0001
     initial_b = 0 # initial y-intercept guess
     initial_m = 0 # initial slope guess
-    num_iterations = 50    
-    [b, m] = gradient_descent_runner(points, initial_b, initial_m, learning_rate, num_iterations)
-    print "After {0} iterations b = "+str(b)+", m = "+str(m)+", error = "+str(compute_error_for_line_given_points(b, m, points))
-    return [b, m]
+    num_iterations = 1000  
+    result = gradient_descent(points, initial_b, initial_m, learning_rate, num_iterations)
+    print "error = " + str(compute_error_for_line_given_points(result[0],result[1], points))
+    return result 
+
+def predict(values):
+    val = run_gradient_descent()
+    for v in values:
+        print str(v)+": " + str(val[1]*v+val[0])
 
 if __name__ == '__main__':
-    res = []
-    res = run()
-    print "Predictions according to your age"
-    print "20: "+str(int(res[1]*20+res[0]))
-    print "27: "+str(int(res[1]*27+res[0]))
-    print "35: "+str(int(res[1]*35+res[0]))
-    print "50: "+str(int(res[1]*50+res[0]))
-    print "75: "+str(int(res[1]*75+res[0]))
+    print "Predictions by age"
+    predict([20,27,35,50,75])
 
 
 
